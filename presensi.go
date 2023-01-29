@@ -1,0 +1,5 @@
+package presensi
+
+func GetAllPresensi() {
+	//
+}
