@@ -1,5 +1,5 @@
 package presensi
 
-func GetAllPresensi() {
+func GetCurrentMonth() {
 	//
 }
