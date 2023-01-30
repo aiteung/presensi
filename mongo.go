@@ -54,17 +54,24 @@ func GetPresensiTodayFromPhoneNumber(mongoconn *mongo.Database, phone_number str
 	return presensi
 }
 
-func GetPresensiMonth(mongoconn *mongo.Database, month_number int) (presensi Presensi) {
+func GetPresensiCurrentMonth(mongoconn *mongo.Database) (allpresensi []Presensi) {
+	startdate, enddate := GetFirstLastDateCurrentMonth()
 	coll := mongoconn.Collection("presensi")
 	today := bson.M{
-		"$eq": []interface{}{bson.M{"$month": "datetime"}, month_number},
+		"$gte": primitive.NewDateTimeFromTime(startdate),
+		"$lte": primitive.NewDateTimeFromTime(enddate),
 	}
-	filter := bson.M{"$expr": today}
-	err := coll.FindOne(context.TODO(), filter).Decode(&presensi)
+	filter := bson.M{"datetime": today}
+	cursor, err := coll.Find(context.TODO(), filter)
 	if err != nil {
 		fmt.Printf("getPresensiTodayFromPhoneNumber: %v\n", err)
 	}
-	return presensi
+	err = cursor.All(context.TODO(), &allpresensi)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return
 }
 
 func GetLokasi(mongoconn *mongo.Database, long float64, lat float64) (namalokasi string) {
