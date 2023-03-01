@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	waProto "go.mau.fi/whatsmeow/binary/proto"
+	"go.mau.fi/whatsmeow/types"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -93,4 +95,35 @@ func GetLokasi(mongoconn *mongo.Database, long float64, lat float64) (namalokasi
 	}
 	return lokasi.Nama
 
+}
+
+func getKaryawanFromPhoneNumber(mongoconn *mongo.Database, phone_number string) (staf Karyawan) {
+	karyawan := mongoconn.Collection("karyawan")
+	filter := bson.M{"phone_number": phone_number}
+	err := karyawan.FindOne(context.TODO(), filter).Decode(&staf)
+	if err != nil {
+		fmt.Printf("getKaryawanFromPhoneNumber: %v\n", err)
+	}
+	return staf
+}
+
+func getPresensiTodayFromPhoneNumber(mongoconn *mongo.Database, phone_number string) (presensi Presensi) {
+	coll := mongoconn.Collection("presensi")
+	today := bson.M{
+		"$gte": primitive.NewDateTimeFromTime(time.Now().Truncate(24 * time.Hour).UTC()),
+	}
+	filter := bson.M{"phone_number": phone_number, "datetime": today}
+	err := coll.FindOne(context.TODO(), filter).Decode(&presensi)
+	if err != nil {
+		fmt.Printf("getPresensiTodayFromPhoneNumber: %v\n", err)
+	}
+	return presensi
+}
+
+func InsertPresensi(Info *types.MessageInfo, Message *waProto.Message, Checkin string, mongoconn *mongo.Database) (InsertedID interface{}) {
+	insertResult, err := mongoconn.Collection("presensi").InsertOne(context.TODO(), fillStructPresensi(Info, Message, Checkin, mongoconn))
+	if err != nil {
+		fmt.Printf("InsertOneDoc: %v\n", err)
+	}
+	return insertResult.InsertedID
 }
