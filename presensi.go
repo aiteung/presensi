@@ -39,6 +39,8 @@ func ButtonMessage(Info *types.MessageInfo, Message *waProto.Message, whatsapp *
 		msg = "semangat 45 kak kejar setoran. kasih tau c obos belum set nomor nya biar bisa approve lembur"
 	case "adorable|pulang|wekwek":
 		msg = "hati hati di jalan ya kak, lihat lurus kedepan jangan ke lain hati kak nanti kesasar, sakit rasanya."
+	default:
+		msg = "Selamat datang di modul presensi, saat ini anda mengakses modul presensi."
 	}
 
 	atmessage.SendMessage(msg, Info.Sender, whatsapp)
