@@ -58,24 +58,8 @@ func LiveLocationMessage(Info *types.MessageInfo, Message *waProto.Message, what
 
 func tidakhadirHandler(Info *types.MessageInfo, Message *waProto.Message, whatsapp *whatsmeow.Client, mongoconn *mongo.Database) {
 	lat, long := atmessage.GetLiveLoc(Message)
-	var btnmsg atmessage.ButtonsMessage
-	btnmsg.Message.HeaderText = "Selamat Datang di Layanan Presensi Kak..."
-	btnmsg.Message.ContentText = "Hai kak " + GetNamaFromPhoneNumber(mongoconn, Info.Sender.User) + ", kakak belum berada pada lokasi presensi nih, ke lokasi presensi dulu ya kak. Atau barangkali ada perlu lain kak?"
-	btnmsg.Message.FooterText = fmt.Sprintf("Lokasi kakak saat ini di koordinat : https://www.google.com/maps/@%f,%f,20z", lat, long)
-	btnmsg.Buttons = []atmessage.WaButton{{
-		ButtonId:    "adorable|ijin|wekwek",
-		DisplayText: "Ijin Dulu",
-	},
-		{
-			ButtonId:    "adorable|sakit|lalala",
-			DisplayText: "Lagi Sakit",
-		},
-		{
-			ButtonId:    "adorable|dinas|kopkop",
-			DisplayText: "Dinas Luar",
-		},
-	}
-	atmessage.SendButtonMessage(btnmsg, Info.Sender, whatsapp)
+	nama := GetNamaFromPhoneNumber(mongoconn, Info.Sender.User)
+	MessageTidakMasukKerja(nama, long, lat, Info, whatsapp)
 }
 
 func hadirHandler(Info *types.MessageInfo, Message *waProto.Message, lokasi string, whatsapp *whatsmeow.Client, mongoconn *mongo.Database) {
