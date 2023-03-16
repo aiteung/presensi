@@ -88,13 +88,13 @@ func hadirHandler(Info *types.MessageInfo, Message *waProto.Message, lokasi stri
 		fmt.Println(aktifjamkerja)
 		if int(aktifjamkerja.Hours()) >= karyawan.Jam_kerja[0].Durasi {
 			id := InsertPresensi(Info, Message, "pulang", mongoconn)
-			ListMessagePulangKerja(karyawan, aktifjamkerja, id, lokasi, Info, whatsapp)
+			MessagePulangKerja(karyawan, aktifjamkerja, id, lokasi, Info, whatsapp)
 		} else {
-			ListMessageJamKerja(karyawan, aktifjamkerja, presensihariini, Info, whatsapp)
+			MessageJamKerja(karyawan, aktifjamkerja, presensihariini, Info, whatsapp)
 		}
 	} else {
 		id := InsertPresensi(Info, Message, "masuk", mongoconn)
-		ListMessageMasukKerja(karyawan, id, lokasi, Info, whatsapp)
+		MessageMasukKerja(karyawan, id, lokasi, Info, whatsapp)
 	}
 }
 
