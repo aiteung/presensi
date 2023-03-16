@@ -10,7 +10,7 @@ import (
 	"go.mau.fi/whatsmeow/types"
 )
 
-func MessageJamKerja(karyawan Karyawan, aktifjamkerja time.Duration, presensihariini Presensi, Info *types.MessageInfo, whatsapp *whatsmeow.Client) {
+func ButtonMessageJamKerja(karyawan Karyawan, aktifjamkerja time.Duration, presensihariini Presensi, Info *types.MessageInfo, whatsapp *whatsmeow.Client) {
 	var btnmsg atmessage.ButtonsMessage
 	btnmsg.Message.HeaderText = "Keterangan Presensi Kerja"
 	btnmsg.Message.ContentText = fmt.Sprintf("yah kak, mohon maaf jam kerja nya belum %v jam. Sabar dulu ya..... nanti presensi kembali.", karyawan.Jam_kerja[0].Durasi)
@@ -31,7 +31,7 @@ func MessageJamKerja(karyawan Karyawan, aktifjamkerja time.Duration, presensihar
 	atmessage.SendButtonMessage(btnmsg, Info.Sender, whatsapp)
 }
 
-func MessagePulangKerja(karyawan Karyawan, aktifjamkerja time.Duration, id interface{}, lokasi string, Info *types.MessageInfo, whatsapp *whatsmeow.Client) {
+func ButtonMessagePulangKerja(karyawan Karyawan, aktifjamkerja time.Duration, id interface{}, lokasi string, Info *types.MessageInfo, whatsapp *whatsmeow.Client) {
 	var btnmsg atmessage.ButtonsMessage
 	btnmsg.Message.HeaderText = "Pulang Kerja"
 
@@ -48,7 +48,7 @@ func MessagePulangKerja(karyawan Karyawan, aktifjamkerja time.Duration, id inter
 	atmessage.SendButtonMessage(btnmsg, Info.Sender, whatsapp)
 }
 
-func MessageMasukKerja(karyawan Karyawan, id interface{}, lokasi string, Info *types.MessageInfo, whatsapp *whatsmeow.Client) {
+func ButtonMessageMasukKerja(karyawan Karyawan, id interface{}, lokasi string, Info *types.MessageInfo, whatsapp *whatsmeow.Client) {
 	var btnmsg atmessage.ButtonsMessage
 	btnmsg.Message.HeaderText = "Masuk Kerja"
 	btnmsg.Message.ContentText = "Hai kak _" + karyawan.Nama + "_,\ndari bagian *" + karyawan.Jabatan + "*, \nmakasih ya sudah melakukan presensi masuk kerja\nLokasi : _*" + lokasi + "*_\nJangan lupa presensi pulangnya ya kak, caranya tinggal share live location lagi aja sama seperti presensi masuk tapi pada saat jam pulang ya kak. Makasi kak..."
