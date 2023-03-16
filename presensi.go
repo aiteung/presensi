@@ -81,63 +81,21 @@ func tidakhadirHandler(Info *types.MessageInfo, Message *waProto.Message, whatsa
 func hadirHandler(Info *types.MessageInfo, Message *waProto.Message, lokasi string, whatsapp *whatsmeow.Client, mongoconn *mongo.Database) {
 	presensihariini := getPresensiTodayFromPhoneNumber(mongoconn, Info.Sender.User)
 	karyawan := getKaryawanFromPhoneNumber(mongoconn, Info.Sender.User)
-	var btnmsg atmessage.ButtonsMessage
 	fmt.Println(karyawan.Jam_kerja[0].Durasi)
 	if !reflect.ValueOf(presensihariini).IsZero() {
 		fmt.Println(presensihariini)
 		aktifjamkerja := time.Now().UTC().Sub(presensihariini.ID.Timestamp().UTC())
 		fmt.Println(aktifjamkerja)
 		if int(aktifjamkerja.Hours()) >= karyawan.Jam_kerja[0].Durasi {
-			btnmsg.Message.HeaderText = "Pulang Kerja"
 			id := InsertPresensi(Info, Message, "pulang", mongoconn)
-			btnmsg.Message.FooterText = fmt.Sprintf("ID presensi pulang : %v", id) + "\n" + "Durasi Kerja : " + strings.Replace(aktifjamkerja.String(), "h", " jam ", 1)
-			btnmsg.Message.ContentText = "Hai kak _" + karyawan.Nama + "_,\ndari bagian *" + karyawan.Jabatan + "*, \nmakasih ya sudah melakukan presensi pulang kerja\nLokasi : _*" + lokasi + "*_"
-			btnmsg.Buttons = []atmessage.WaButton{{
-				ButtonId:    "adorable|pulang|wekwek",
-				DisplayText: "Langsung Pulang",
-			}, {
-				ButtonId:    "adorable|lembur|wekwek",
-				DisplayText: "Lanjut Lembur",
-			},
-			}
+			ListMessagePulangKerja(karyawan, aktifjamkerja, id, lokasi, Info, whatsapp)
 		} else {
-			btnmsg.Message.HeaderText = "Keterangan Presensi Kerja"
-			btnmsg.Message.ContentText = fmt.Sprintf("yah kak, mohon maaf jam kerja nya belum %v jam. Sabar dulu ya..... nanti presensi kembali.", karyawan.Jam_kerja[0].Durasi)
-			btnmsg.Message.FooterText = fmt.Sprintf("ID presensi masuk : %v", presensihariini.ID) + "\n" + "Durasi Kerja : " + strings.Replace(aktifjamkerja.String(), "h", " jam ", 1)
-			btnmsg.Buttons = []atmessage.WaButton{{
-				ButtonId:    "adorable|ijin|wekwek",
-				DisplayText: "Ijin Keluar",
-			},
-				{
-					ButtonId:    "adorable|sakit|lalala",
-					DisplayText: "Lagi Sakit",
-				},
-				{
-					ButtonId:    "adorable|dinas|kopkop",
-					DisplayText: "Dinas Luar",
-				},
-			}
+			ListMessageJamKerja(karyawan, aktifjamkerja, presensihariini, Info, whatsapp)
 		}
 	} else {
-		btnmsg.Message.HeaderText = "Masuk Kerja"
-		btnmsg.Message.ContentText = "Hai kak _" + karyawan.Nama + "_,\ndari bagian *" + karyawan.Jabatan + "*, \nmakasih ya sudah melakukan presensi masuk kerja\nLokasi : _*" + lokasi + "*_\nJangan lupa presensi pulangnya ya kak, caranya tinggal share live location lagi aja sama seperti presensi masuk tapi pada saat jam pulang ya kak. Makasi kak..."
 		id := InsertPresensi(Info, Message, "masuk", mongoconn)
-		btnmsg.Message.FooterText = fmt.Sprintf("ID presensi masuk : %v", id)
-		btnmsg.Buttons = []atmessage.WaButton{{
-			ButtonId:    "adorable|ijin|wekwek",
-			DisplayText: "Ijin Keluar",
-		},
-			{
-				ButtonId:    "adorable|sakit|lalala",
-				DisplayText: "Lagi Sakit",
-			},
-			{
-				ButtonId:    "adorable|dinas|kopkop",
-				DisplayText: "Dinas Luar",
-			},
-		}
+		ListMessageMasukKerja(karyawan, id, lokasi, Info, whatsapp)
 	}
-	atmessage.SendButtonMessage(btnmsg, Info.Sender, whatsapp)
 }
 
 func fillStructPresensi(Info *types.MessageInfo, Message *waProto.Message, Checkin string, mongoconn *mongo.Database) (presensi Presensi) {
