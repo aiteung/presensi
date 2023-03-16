@@ -1,6 +1,6 @@
 module github.com/aiteung/presensi
 
-go 1.19
+go 1.20
 
 require (
 	github.com/aiteung/atdb v0.0.3
