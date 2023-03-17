@@ -15,12 +15,14 @@ import (
 
 func GenerateReportCurrentMonth(MongoConn *mongo.Database, to types.JID, whatsapp *whatsmeow.Client) (resp whatsmeow.SendResponse, err error) {
 	location, _ := time.LoadLocation("Asia/Jakarta")
+	atmessage.SendMessage("Mohon tunggu sebentar, laporan sedang di buat ya kak", to, whatsapp)
 	res := GetPresensiCurrentMonth(MongoConn)
 	fmt.Println(res)
 	filename := "rekapbulanini.csv"
 	file, err := os.Create(filename)
 	if err != nil {
 		log.Fatalln("failed to create file", err)
+		atmessage.SendMessage("failed to create file", to, whatsapp)
 	}
 	cw := csv.NewWriter(file)
 	cw.Write([]string{"DateTime", "Location", "Phone_Number", "CheckIn", "Nama", "Jabatan"})
@@ -32,6 +34,7 @@ func GenerateReportCurrentMonth(MongoConn *mongo.Database, to types.JID, whatsap
 	filebyte, err := os.ReadFile(filename)
 	if err != nil {
 		log.Fatalln("failed to open file", err)
+		atmessage.SendMessage("failed to open file", to, whatsapp)
 	}
 	resp, err = atmessage.SendDocumentMessage(filebyte, filename, filename, "application/csv", to, whatsapp)
 	return
