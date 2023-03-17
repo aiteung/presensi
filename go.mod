@@ -7,7 +7,7 @@ require (
 	github.com/aiteung/atmessage v0.0.16
 	github.com/aiteung/musik v0.0.5
 	go.mau.fi/whatsmeow v0.0.0-20230316102651-f0c131192076
-	go.mongodb.org/mongo-driver v1.11.2
+	go.mongodb.org/mongo-driver v1.11.3
 )
 
 require (
