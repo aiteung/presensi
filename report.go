@@ -3,6 +3,7 @@ package presensi
 import (
 	"encoding/csv"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/aiteung/atmessage"
@@ -15,6 +16,8 @@ func GenerateReportCurrentMonth(MongoConn *mongo.Database, to types.JID, whatsap
 	location, _ := time.LoadLocation("Asia/Jakarta")
 	atmessage.SendMessage("Mohon tunggu sebentar, laporan sedang di buat ya kak", to, whatsapp)
 	res := GetPresensiCurrentMonth(MongoConn)
+	msg := "Data rekap sebanyak : " + strconv.Itoa(len(res)) + " baris"
+	atmessage.SendMessage(msg, to, whatsapp)
 	filename := "rekapbulanini.csv"
 	file, err := os.Create(filename)
 	if err != nil {
@@ -34,10 +37,14 @@ func GenerateReportCurrentMonth(MongoConn *mongo.Database, to types.JID, whatsap
 
 	}
 	cw.Flush()
+	msg = "Nama file yang dibuat : " + filename
+	atmessage.SendMessage(msg, to, whatsapp)
 	filebyte, err := os.ReadFile(filename)
 	if err != nil {
 		atmessage.SendMessage("failed to Read file", to, whatsapp)
 	}
+	msg = "File dikirim ke server : " + filename
+	atmessage.SendMessage(msg, to, whatsapp)
 	resp, err = atmessage.SendDocumentMessage(filebyte, filename, filename, "application/csv", to, whatsapp)
 	return
 }
