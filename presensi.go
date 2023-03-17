@@ -23,24 +23,19 @@ func Handler(Info *types.MessageInfo, Message *waProto.Message, whatsapp *whatsm
 		LiveLocationMessage(Info, Message, whatsapp, mongoconn)
 	} else if Message.ButtonsResponseMessage != nil {
 		ButtonMessage(Info, Message, whatsapp)
-	} else if IsMultiKey(Info, Message) {
-		GenerateReportCurrentMonth(mongoconn, Info.Chat, whatsapp)
+	} else {
+		MultiKey(mongoconn, Info, Message, whatsapp)
 	}
 }
 
-func IsMultiKey(Info *types.MessageInfo, Message *waProto.Message) bool {
+func MultiKey(mongoconn *mongo.Database, Info *types.MessageInfo, Message *waProto.Message, whatsapp *whatsmeow.Client) {
 	m := musik.NormalizeString(Message.GetConversation())
-	if (strings.Contains(m, "teung") && Info.Chat.Server == "g.us") || (Info.Chat.Server == "s.whatsapp.net") {
-		complete, match := musik.IsMatch(m, "adorable", "rekap", "presen", "absen", "hrd", "sdm", "excel", "data", "bulan")
-		fmt.Println(complete)
-		if match >= 2 {
-			return true
-		} else {
-			return false
-		}
-	} else {
-		return false
+	complete, match := musik.IsMatch(m, "ini", "rekap", "presen", "absen", "hrd", "sdm", "excel", "data", "bulan")
+	fmt.Println(complete)
+	if match >= 2 {
+		GenerateReportCurrentMonth(mongoconn, Info.Chat, whatsapp)
 	}
+
 }
 
 func ButtonMessage(Info *types.MessageInfo, Message *waProto.Message, whatsapp *whatsmeow.Client) {
@@ -110,7 +105,7 @@ func fillStructPresensi(Info *types.MessageInfo, Message *waProto.Message, Check
 }
 
 func Member(Info *types.MessageInfo, Message *waProto.Message, mongoconn *mongo.Database) (status bool) {
-	if GetNamaFromPhoneNumber(mongoconn, Info.Sender.User) != "" && Info.Chat.Server != "g.us" && (Message.LiveLocationMessage != nil || Message.ButtonsResponseMessage != nil || IsMultiKey(Info, Message)) {
+	if GetNamaFromPhoneNumber(mongoconn, Info.Sender.User) != "" && Info.Chat.Server != "g.us" && (Message.LiveLocationMessage != nil || Message.ButtonsResponseMessage != nil) {
 		if Message.ButtonsResponseMessage != nil {
 			if strings.Contains(*Message.ButtonsResponseMessage.SelectedButtonId, Keyword) {
 				status = true
@@ -118,6 +113,8 @@ func Member(Info *types.MessageInfo, Message *waProto.Message, mongoconn *mongo.
 		} else {
 			status = true
 		}
+	} else if GetNamaFromPhoneNumber(mongoconn, Info.Sender.User) != "" && strings.Contains(Message.GetConversation(), Keyword) {
+		status = true
 	}
 	return
 
