@@ -7,8 +7,8 @@ github.com/Azure/azure-sdk-for-go/sdk/internal v1.0.0/go.mod h1:eWRD7oawr1Mu1sLC
 github.com/AzureAD/microsoft-authentication-library-for-go v0.5.1/go.mod h1:Vt9sXTKwMyGcOxSmLDMnGPgqsUg7m8pe215qMLrDXw4=
 github.com/aiteung/atdb v0.0.7 h1:DZ5m6n5kAHFNrggnEG2B3UawXJ+flMdsHP4JCgKGk5s=
 github.com/aiteung/atdb v0.0.7/go.mod h1:LpKJzlCiFzTCiIsRTO3olNTnP4dzrt0KB/hxUVicoqs=
-github.com/aiteung/atmessage v0.0.16 h1:4Zk7Q/JkvLSX24hlGmyloJPlw7HcR3+7MuQC7v/RK7s=
-github.com/aiteung/atmessage v0.0.16/go.mod h1:C58WNBo2IHwsdOcWhJrVDH5usDdWYhTm2yJmjYCEQJ8=
+github.com/aiteung/atmessage v0.0.17 h1:p7vuwqbww6q85sQfQB5Ade3hpoL7u3yAEbvE7YviAWI=
+github.com/aiteung/atmessage v0.0.17/go.mod h1:C58WNBo2IHwsdOcWhJrVDH5usDdWYhTm2yJmjYCEQJ8=
 github.com/aiteung/musik v0.0.5 h1:u97eBCwBL7Za68h9CgxXLaKzcbJEZtqQFQjSQ6/32u0=
 github.com/aiteung/musik v0.0.5/go.mod h1:fwfzankgCEYSBSAp0FMuiLJoXvSaZk+lSWhgZZETFCs=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
