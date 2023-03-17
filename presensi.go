@@ -33,7 +33,12 @@ func MultiKey(mongoconn *mongo.Database, Info *types.MessageInfo, Message *waPro
 	complete, match := musik.IsMatch(m, "ini", "rekap", "presen", "absen", "hrd", "sdm", "excel", "data", "bulan")
 	fmt.Println(complete)
 	if match >= 2 {
-		GenerateReportCurrentMonth(mongoconn, Info.Chat, whatsapp)
+		resp, err := GenerateReportCurrentMonth(mongoconn, Info.Chat, whatsapp)
+		if err != nil {
+			atmessage.SendMessage("error GenerateReportCurrentMonth", Info.Chat, whatsapp)
+		}
+		fmt.Println(resp)
+
 	}
 
 }
