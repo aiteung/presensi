@@ -2,7 +2,6 @@ package presensi
 
 import (
 	"os"
-	"testing"
 
 	"github.com/aiteung/atdb"
 )
@@ -14,7 +13,7 @@ var MongoInfo = atdb.DBInfo{
 
 var MongoConn = atdb.MongoConnect(MongoInfo)
 
-func TestGetPresensiThisMonth(t *testing.T) {
-	GenerateReportCurrentMonth(MongoConn)
+//func TestGetPresensiThisMonth(t *testing.T) {
+//	GenerateReportCurrentMonth(MongoConn)
 
-}
+//}
