@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/aiteung/atdb v0.0.7
-	github.com/aiteung/atmessage v0.0.14
+	github.com/aiteung/atmessage v0.0.16
 	github.com/aiteung/musik v0.0.5
 	go.mau.fi/whatsmeow v0.0.0-20230316102651-f0c131192076
 	go.mongodb.org/mongo-driver v1.11.2

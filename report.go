@@ -33,6 +33,6 @@ func GenerateReportCurrentMonth(MongoConn *mongo.Database, to types.JID, whatsap
 	if err != nil {
 		log.Fatalln("failed to open file", err)
 	}
-	resp, err = atmessage.SendDocumentMessage(filebyte, to, whatsapp)
+	resp, err = atmessage.SendDocumentMessage(filebyte, filename, filename, "application/csv", to, whatsapp)
 	return
 }
