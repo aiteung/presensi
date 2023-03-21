@@ -29,6 +29,7 @@ func GenerateReportCurrentMonth(MongoConn *mongo.Database, to types.JID, whatsap
 		atmessage.SendMessage("failed to create file "+err.Error(), to, whatsapp)
 	}
 	cw := csv.NewWriter(file)
+	cw.Comma = ';'
 	err = cw.Write([]string{"DateTime", "Location", "Phone_Number", "CheckIn", "Nama", "Jabatan"})
 	if err != nil {
 		atmessage.SendMessage("failed to write file", to, whatsapp)
