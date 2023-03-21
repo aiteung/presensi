@@ -18,7 +18,12 @@ func GenerateReportCurrentMonth(MongoConn *mongo.Database, to types.JID, whatsap
 	res := GetPresensiCurrentMonth(MongoConn)
 	msg := "Data rekap sebanyak : " + strconv.Itoa(len(res)) + " baris"
 	atmessage.SendMessage(msg, to, whatsapp)
-	filename := "rekapbulanini.csv"
+	path, err := os.Executable()
+	if err != nil {
+		atmessage.SendMessage(err.Error(), to, whatsapp)
+	}
+	filename := path + "rekapbulanini.csv"
+	atmessage.SendMessage("nama file : "+filename, to, whatsapp)
 	file, err := os.Create(filename)
 	if err != nil {
 		atmessage.SendMessage("failed to create file", to, whatsapp)
@@ -37,8 +42,6 @@ func GenerateReportCurrentMonth(MongoConn *mongo.Database, to types.JID, whatsap
 
 	}
 	cw.Flush()
-	msg = "Nama file yang dibuat : " + filename
-	atmessage.SendMessage(msg, to, whatsapp)
 	filebyte, err := os.ReadFile(filename)
 	if err != nil {
 		atmessage.SendMessage("failed to Read file", to, whatsapp)
