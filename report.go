@@ -18,10 +18,6 @@ func GenerateReportCurrentMonth(MongoConn *mongo.Database, to types.JID, whatsap
 	res := GetPresensiCurrentMonth(MongoConn)
 	msg := "Data rekap sebanyak : " + strconv.Itoa(len(res)) + " baris"
 	atmessage.SendMessage(msg, to, whatsapp)
-	path, err := os.Executable()
-	if err != nil {
-		atmessage.SendMessage(err.Error(), to, whatsapp)
-	}
 	filename := "rekapbulanini.csv"
 	atmessage.SendMessage("nama file : "+filename, to, whatsapp)
 	file, err := os.Create(filename)
