@@ -22,7 +22,7 @@ func GenerateReportCurrentMonth(MongoConn *mongo.Database, to types.JID, whatsap
 	if err != nil {
 		atmessage.SendMessage(err.Error(), to, whatsapp)
 	}
-	filename := path + "/rekapbulanini.csv"
+	filename := "rekapbulanini.csv"
 	atmessage.SendMessage("nama file : "+filename, to, whatsapp)
 	file, err := os.Create(filename)
 	if err != nil {
