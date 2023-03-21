@@ -49,6 +49,6 @@ func GenerateReportCurrentMonth(MongoConn *mongo.Database, to types.JID, whatsap
 
 	msg = "File dikirim ke server : " + filename
 	atmessage.SendMessage(msg, to, whatsapp)
-	resp, err = atmessage.SendDocumentMessage(filebyte, filename, filename, "application/csv", to, whatsapp)
+	resp, err = atmessage.SendDocumentMessage(filebyte, "rekap.csv", "Rekapitulasi Presensi Bulan Ini", "application/csv", to, whatsapp)
 	return
 }
