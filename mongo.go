@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/aiteung/module/model"
 	waProto "go.mau.fi/whatsmeow/binary/proto"
 	"go.mau.fi/whatsmeow/types"
 	"go.mongodb.org/mongo-driver/bson"
@@ -122,6 +123,14 @@ func getPresensiTodayFromPhoneNumber(mongoconn *mongo.Database, phone_number str
 
 func InsertPresensi(Info *types.MessageInfo, Message *waProto.Message, Checkin string, mongoconn *mongo.Database) (InsertedID interface{}) {
 	insertResult, err := mongoconn.Collection("presensi").InsertOne(context.TODO(), fillStructPresensi(Info, Message, Checkin, mongoconn))
+	if err != nil {
+		fmt.Printf("InsertOneDoc: %v\n", err)
+	}
+	return insertResult.InsertedID
+}
+
+func insertPresensi(Pesan model.IteungMessage, Checkin string, mongoconn *mongo.Database) (InsertedID interface{}) {
+	insertResult, err := mongoconn.Collection("presensi").InsertOne(context.TODO(), FillStructPresensi(Pesan, Checkin, mongoconn))
 	if err != nil {
 		fmt.Printf("InsertOneDoc: %v\n", err)
 	}

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/aiteung/atmessage"
+	"github.com/aiteung/module/model"
 	"github.com/aiteung/musik"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -73,10 +74,22 @@ func LiveLocationMessage(Info *types.MessageInfo, Message *waProto.Message, what
 
 }
 
+func GetLiveLoc(Pesan model.IteungMessage) (lat, long float64) {
+	lat = Pesan.Latitude
+	long = Pesan.Longitude
+	return
+}
+
 func tidakhadirHandler(Info *types.MessageInfo, Message *waProto.Message, whatsapp *whatsmeow.Client, mongoconn *mongo.Database) {
 	lat, long := atmessage.GetLiveLoc(Message)
 	nama := GetNamaFromPhoneNumber(mongoconn, Info.Sender.User)
 	MessageTidakMasukKerja(nama, long, lat, Info, whatsapp)
+}
+
+func TidakhadirHandler(Pesan model.IteungMessage, mongoconn *mongo.Database) string {
+	lat, long := GetLiveLoc(Pesan)
+	nama := GetNamaFromPhoneNumber(mongoconn, Pesan.Phone_number)
+	return ReplyMessageTidakMasukKerja(nama, long, lat)
 }
 
 func hadirHandler(Info *types.MessageInfo, Message *waProto.Message, lokasi string, whatsapp *whatsmeow.Client, mongoconn *mongo.Database) {
@@ -99,6 +112,27 @@ func hadirHandler(Info *types.MessageInfo, Message *waProto.Message, lokasi stri
 	}
 }
 
+func HadirHandler(Pesan model.IteungMessage, lokasi string, mongoconn *mongo.Database) (reply string) {
+	presensihariini := getPresensiTodayFromPhoneNumber(mongoconn, Pesan.Phone_number)
+	karyawan := getKaryawanFromPhoneNumber(mongoconn, Pesan.Phone_number)
+	fmt.Println(karyawan.Jam_kerja[0].Durasi)
+	if !reflect.ValueOf(presensihariini).IsZero() {
+		fmt.Println(presensihariini)
+		aktifjamkerja := time.Now().UTC().Sub(presensihariini.ID.Timestamp().UTC())
+		fmt.Println(aktifjamkerja)
+		if int(aktifjamkerja.Hours()) >= karyawan.Jam_kerja[0].Durasi {
+			id := insertPresensi(Pesan, "pulang", mongoconn)
+			reply = ReplyMessagePulangKerja(karyawan, aktifjamkerja, id, lokasi)
+		} else {
+			reply = ReplyMessageJamKerja(karyawan, aktifjamkerja, presensihariini)
+		}
+	} else {
+		id := insertPresensi(Pesan, "masuk", mongoconn)
+		reply = ReplyMessageMasukKerja(karyawan, id, lokasi)
+	}
+	return
+}
+
 func fillStructPresensi(Info *types.MessageInfo, Message *waProto.Message, Checkin string, mongoconn *mongo.Database) (presensi Presensi) {
 	presensi.Latitude, presensi.Longitude = atmessage.GetLiveLoc(Message)
 	presensi.Location = GetLokasi(mongoconn, *Message.LiveLocationMessage.DegreesLongitude, *Message.LiveLocationMessage.DegreesLatitude)
@@ -106,6 +140,16 @@ func fillStructPresensi(Info *types.MessageInfo, Message *waProto.Message, Check
 	presensi.Datetime = primitive.NewDateTimeFromTime(time.Now().UTC())
 	presensi.Checkin = Checkin
 	presensi.Biodata = GetBiodataFromPhoneNumber(mongoconn, Info.Sender.User)
+	return presensi
+}
+
+func FillStructPresensi(Pesan model.IteungMessage, Checkin string, mongoconn *mongo.Database) (presensi Presensi) {
+	presensi.Latitude, presensi.Longitude = GetLiveLoc(Pesan)
+	presensi.Location = GetLokasi(mongoconn, presensi.Longitude, presensi.Latitude)
+	presensi.Phone_number = Pesan.Phone_number
+	presensi.Datetime = primitive.NewDateTimeFromTime(time.Now().UTC())
+	presensi.Checkin = Checkin
+	presensi.Biodata = GetBiodataFromPhoneNumber(mongoconn, Pesan.Phone_number)
 	return presensi
 }
 
