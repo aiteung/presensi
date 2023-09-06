@@ -66,5 +66,6 @@ func GenerateReportCurrentMonth(MongoConn *mongo.Database, im model.IteungMessag
 	im.Filedata = fileBase64Str
 	im.Filename = filepath.Base(filename)
 	msg.Messages = "File dikirim ke server : " + filename
+	os.Remove(filename)
 	return module.DocumentSendToGoWAAPI(im, ApiWaDoc)
 }
