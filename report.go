@@ -41,7 +41,7 @@ func GenerateReportCurrentMonth(MongoConn *mongo.Database, im model.IteungMessag
 		module.SendToGoWAAPI(msg, ApiWa)
 	}
 	cw := csv.NewWriter(file)
-	cw.Comma = ';'
+	cw.Comma = ','
 	err = cw.Write([]string{"DateTime", "Location", "Phone_Number", "CheckIn", "Nama", "Jabatan"})
 	if err != nil {
 		msg.Messages = "failed to write file " + err.Error()
