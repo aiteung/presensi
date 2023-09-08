@@ -2,12 +2,10 @@ module github.com/aiteung/presensi
 
 go 1.21
 
-toolchain go1.21.0
-
 require (
 	github.com/aiteung/atdb v0.0.13
 	github.com/aiteung/atmessage v0.0.31
-	github.com/aiteung/module v0.0.25
+	github.com/aiteung/module v0.0.27
 	github.com/google/uuid v1.3.0
 	go.mau.fi/whatsmeow v0.0.0-20230831081037-69534bf768bc
 	go.mongodb.org/mongo-driver v1.11.6
@@ -17,7 +15,7 @@ require (
 	aidanwoods.dev/go-paseto v1.2.0 // indirect
 	filippo.io/edwards25519 v1.0.0 // indirect
 	github.com/Rhymen/go-whatsapp v0.1.1 // indirect
-	github.com/aiteung/atapi v0.0.14 // indirect
+	github.com/aiteung/atapi v0.0.16 // indirect
 	github.com/aiteung/musik v0.0.5 // indirect
 	github.com/go-sql-driver/mysql v1.7.1 // indirect
 	github.com/golang-sql/civil v0.0.0-20220223132316-b832511892a9 // indirect
